@@ -3,6 +3,13 @@ const User = require('./models/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const createToken = (user,secret,expiresIn)=>{
+    
+    const {username, email} = user
+
+    return jwt.sign({username,email},secret,{expiresIn})
+}
+
 exports.resolvers = {
     Query: {
         getAllRecipes: ()=>{   
@@ -11,22 +18,45 @@ exports.resolvers = {
     },
 
     Mutation: {
-        addRecipe: (root, args) => { 
-            const newRecipe = new Recipe({
-                name: args.recipeInput.name,
-                description: args.recipeInput.description,
-                category: args.recipeInput.category,
-                instructions: args.recipeInput.instructions,
-                createdDate: args.recipeInput.createdDate,
-                username: args.recipeInput.username
-            })
-            return newRecipe
-                .save()
-                .then(result=>{
-                    return {...result._doc}
+        addRecipe: async (root, args) => { 
+            try {
+                const newRecipe = await new Recipe({
+                    name: args.recipeInput.name,
+                    description: args.recipeInput.description,
+                    category: args.recipeInput.category,
+                    instructions: args.recipeInput.instructions,
+                    createdDate: args.recipeInput.createdDate,
+                    username: args.recipeInput.username
                 })
-                .catch(err => console.log(err))
+                newRecipe.save()
+                return newRecipe
+            } catch (error) {
+                console.log(error)
+            }
         },
+        signUpUser: async (root, args)=> {
+           try {
+            const user = await User.findOne({username: args.userInput.username})
+            if(user){
+               throw new Error("User already exists") 
+            }
+            else{
+                
+                const newUser = await new User({
+                    username: args.userInput.username,
+                    email: args.userInput.email,
+                    password: args.userInput.password
+                }).save()
+                return { token : createToken(newUser,"asdasdjaoisjdoiasdasdijaoisdjoaasda","1hr")}
+            }
+                
+               
+           } catch (error) {
+               console.log(error)
+           }
+
+            }
+        
         // addUser: (root,args) => {
             
         //     bcrypt.hash(args.userInput.password,10,function(err,hash){

@@ -16,7 +16,6 @@ exports.typeDefs =`
         }
         type User{
             _id: ID
-            name: String!
             username: String!
             password: String
             email: String!
@@ -28,7 +27,6 @@ exports.typeDefs =`
 
         input userInput{
             _id: ID
-            name: String!
             username: String!
             email: String!
             password: String
@@ -52,7 +50,7 @@ exports.typeDefs =`
         }
 
         type Mutation {
-            signUpUser(userInput: userInput) : Token!
-            addRecipe(recipeInput: recipeInput): Recipe!
+            signUpUser(userInput: userInput) : Token
+            addRecipe(recipeInput: recipeInput): Recipe
         }
 `
