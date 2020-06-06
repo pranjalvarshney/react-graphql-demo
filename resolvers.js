@@ -34,6 +34,25 @@ exports.resolvers = {
                 console.log(error)
             }
         },
+        signInUser: async( root, args) => {
+            try {
+                const user = await User.findOne({username: args.userInput2.username})
+                if(!user){
+                    throw new Error("User not found")
+                }
+                else{
+                    const isPasswordValid = await bcrypt.compare(args.userInput2.password, user.password)
+                    if(!isPasswordValid){
+                        throw new Error("Invalid Password")
+                    }
+                    else{
+                        return { token : createToken(user,"asdasdjaoisjdoiasdasdijaoisdjoaasda","1hr")}
+                    }
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        },
         signUpUser: async (root, args)=> {
            try {
             const user = await User.findOne({username: args.userInput.username})
@@ -49,7 +68,7 @@ exports.resolvers = {
                 }).save()
                 return { token : createToken(newUser,"asdasdjaoisjdoiasdasdijaoisdjoaasda","1hr")}
             }
-                
+                 
                
            } catch (error) {
                console.log(error)

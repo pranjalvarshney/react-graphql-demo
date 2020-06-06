@@ -31,6 +31,11 @@ exports.typeDefs =`
             email: String!
             password: String
         }
+        input userInput2{
+            _id: ID
+            username: String!
+            password: String
+        }
 
         input recipeInput {
             name: String!
@@ -51,6 +56,7 @@ exports.typeDefs =`
 
         type Mutation {
             signUpUser(userInput: userInput) : Token
+            signInUser(userInput2: userInput2) : Token
             addRecipe(recipeInput: recipeInput): Recipe
         }
 `

@@ -13,3 +13,25 @@ export const getALLRecipe = gql`
         }
     }
 `
+export const SignIn_User = gql`
+    mutation($username: String!,$password: String ){
+        signInUser(userInput2:{
+        username: $username,
+        password: $password
+        }){
+        token
+        }
+    }
+`
+
+export const Add_New_User = gql`
+    mutation($username: String!, $email: String!,$password: String ){
+        signUpUser(userInput:{
+        username: $username,
+        email: $email,
+        password: $password
+        }){
+        token
+        }
+    }
+`

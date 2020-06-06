@@ -7,12 +7,14 @@ import ApolloClient from "apollo-boost"
 import {ApolloProvider} from 'react-apollo'
 import Signin from "./components/Auth/Signin"
 import Signup from "./components/Auth/Signup"
-
+import 'bootstrap/dist/css/bootstrap.css'
 
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql'    
+  uri: 'http://localhost:4000/graphql',
+  
+  
 })
 
 const Root = () => ( // implicit return
@@ -21,7 +23,7 @@ const Root = () => ( // implicit return
       <Route path="/" exact component={App} />
       <Route path="/signin" component={Signin} />
       <Route path="/signup" component={Signup} />
-      <Redirect path="/" />
+      <Redirect to="/" />
     </Switch>
   </Router>
 )
