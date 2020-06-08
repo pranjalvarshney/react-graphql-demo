@@ -8,12 +8,32 @@ import {ApolloProvider} from 'react-apollo'
 import Signin from "./components/Auth/Signin"
 import Signup from "./components/Auth/Signup"
 import 'bootstrap/dist/css/bootstrap.css'
+import withSession from './components/Auth/withSession'
 
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
   
+  // for sending auth token to the server
+
+  fetchOptions: {                             
+    credentials: 'include'
+  },
+  request: operation => { 
+    const token = localStorage.getItem('token')
+    operation.setContext({
+      headers: {
+        authorization: token
+      }
+    })
+  },
+  onError: ({ networkError }) => {
+    if(networkError){
+      console.log('Network Error',networkError)
+     
+    }
+  }
   
 })
 
@@ -28,11 +48,13 @@ const Root = () => ( // implicit return
   </Router>
 )
 
+const RootWithSession = withSession(Root)
+
 ReactDOM.render(
 
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <Root />
+      <RootWithSession />
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')

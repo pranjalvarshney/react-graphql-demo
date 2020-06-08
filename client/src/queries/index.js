@@ -35,3 +35,13 @@ export const Add_New_User = gql`
         }
     }
 `
+
+export const getCurrent_User = gql`
+    query{
+        getCurrentUser{
+            username
+            joindate
+            email
+        }
+    }
+`

@@ -30,7 +30,7 @@ class Signup extends Component {
         event.preventDefault()
         signUpUser().then(({data}) =>{
             console.log(data.signUpUser.token)
-            localStorage.setItem('token', data.signInUser.token)
+            localStorage.setItem('token', data.signUpUser.token)
             this.clearState()
         })
         
@@ -70,7 +70,9 @@ class Signup extends Component {
                                     
                                     <button type="submit" disabled={loading || this.validateForm()} className="btn btn-primary w-100">Submit</button>
 
-                                    
+                                    {
+                                        error && <div>{error}</div>
+                                    }
                                 
                                 </form> 
                             )        

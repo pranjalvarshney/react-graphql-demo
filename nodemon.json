@@ -2,6 +2,7 @@
     "env": {
         "PORT" : 4000,
         "DBUser": "dbuser",
-        "DBPassword": "dbuser123"
+        "DBPassword": "dbuser123",
+        "SECRET_KEY":"asdasdjaoisjdoiasdasdijaoisdjoaasda"
     }
 }

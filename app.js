@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
-
+const jwt = require('jsonwebtoken')
 const graphqlHTTP = require('express-graphql')
 const graphql = require('graphql')
 
@@ -13,29 +13,44 @@ const {resolvers} = require('./resolvers')
 
 const { makeExecutableSchema } = require('graphql-tools')
 
-// Put together a schema
+// allow cross site access
+app.use(cors({ origin: "http://localhost:3000" , credentials: true})) 
 
-app.use(cors({ origin: "http://localhost:3000" , credentials: true}))
+// setup jwt authentication middleware
+app.use(async (req,res,next) => {
+    const token = req.headers.authorization
+    console.log(token , typeof(token))
+    if(token !== "null"){
+        try {
+            const currentUser = await jwt.verify(token,process.env.SECRET_KEY)
+            console.log(currentUser)
+            req.currentUser = currentUser
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    next()
+})
 
-app.use('/graphql',graphqlHTTP({
-    schema: makeExecutableSchema({
+
+app.use('/graphql',graphqlHTTP(({currentUser})=>({
+    schema: makeExecutableSchema({ 
         typeDefs,
         resolvers
     }),
+    context: {
+        User,
+        Recipe,
+        currentUser
+    },
+    onError: ({ networkError, graphQLErrors }) => {
+        console.log('graphQLErrors', graphQLErrors)
+        console.log('networkError', networkError)
+      }
+    ,
     graphiql: true
-}))
+})))
 
-// // GraphiQL, a visual editor for queries
-// app.use('/graphiql',graphiqlExpress({endpointURL: '/graphql'}))
-
-// // The GraphQL endpoint
-// app.use('/graphql',graphqlExpress({
-//     schema,
-//     context: {
-//         Recipe,
-//         User
-//     }
-// }))
 
 // mongodb connection
 const uri = `mongodb+srv://${process.env.DBUser}:${process.env.DBPassword}@cluster0-rheoc.mongodb.net/DB?retryWrites=true&w=majority`

@@ -15,6 +15,17 @@ exports.resolvers = {
         getAllRecipes: ()=>{   
             return Recipe.find({})
         },
+        getCurrentUser: async (root,agrs,{currentUser ,User}) => {
+            if(!currentUser){
+                return null
+            }
+            const user = await User.findOne({username: currentUser.username})
+                .populate({
+                    path:  'favorites',
+                    model: 'Recipe'
+                })
+            return user
+        }
     },
 
     Mutation: {
@@ -34,7 +45,7 @@ exports.resolvers = {
                 console.log(error)
             }
         },
-        signInUser: async( root, args) => {
+        signInUser: async( root, args,{User}) => {
             try {
                 const user = await User.findOne({username: args.userInput2.username})
                 if(!user){
@@ -46,14 +57,14 @@ exports.resolvers = {
                         throw new Error("Invalid Password")
                     }
                     else{
-                        return { token : createToken(user,"asdasdjaoisjdoiasdasdijaoisdjoaasda","1hr")}
+                        return { token : createToken(user,process.env.SECRET_KEY,"1hr")}
                     }
                 }
             } catch (error) {
                 console.log(error)
             }
         },
-        signUpUser: async (root, args)=> {
+        signUpUser: async (root, args,{User})=> {
            try {
             const user = await User.findOne({username: args.userInput.username})
             if(user){
@@ -66,7 +77,7 @@ exports.resolvers = {
                     email: args.userInput.email,
                     password: args.userInput.password
                 }).save()
-                return { token : createToken(newUser,"asdasdjaoisjdoiasdasdijaoisdjoaasda","1hr")}
+                return { token : createToken(newUser,process.env.SECRET_KEY,"1hr")}
             }
                  
                
