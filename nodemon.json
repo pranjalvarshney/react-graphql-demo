@@ -1,8 +1,9 @@
 {
     "env": {
         "PORT" : 4000,
-        "DBUser": "dbuser",
-        "DBPassword": "dbuser123",
+        "DBUser": "",
+        "DBPassword": "",
         "SECRET_KEY":"asdasdjaoisjdoiasdasdijaoisdjoaasda"
     }
 }
+//enter your mongo dbuser and dbpassword 
